@@ -1,5 +1,18 @@
 # Electric Kiwi Python API
 
+[![SemVer 0.5.0][img_version]][url_version]
+[![PyPI Releases][img_pypi]][url_pypi]
+[![Supported Python Versions][img_pyversions]][url_pyversions]
+
+[img_version]: https://img.shields.io/static/v1.svg?label=SemVer&message=0.5.0&color=blue
+[url_version]: https://pypi.org/project/electrickiwi-api/
+
+[img_pypi]: https://img.shields.io/badge/PyPI-wheels-green.svg
+[url_pypi]: https://pypi.org/project/bumpver/#files
+
+[img_pyversions]: https://img.shields.io/pypi/pyversions/electrickiwi-api.svg
+[url_pyversions]: https://pypi.python.org/pypi/electrickiwi-api
+
 ## What it does
 Provide a simple API interface to the Electric Kiwi API and includes all endpoints available on the juice hacker site
 
@@ -7,7 +20,7 @@ Provide a simple API interface to the Electric Kiwi API and includes all endpoin
 session management / token management, there are enough libraries and frameworks that
 already do this very well, no point reinventing the wheel
 
-Authentication is left to you.
+Authentication has been left to you.
 
 
 ## How to use it

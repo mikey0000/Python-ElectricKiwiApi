@@ -6,12 +6,6 @@ from apiclient import (
     paginated
 )
 
-
-# remove dev for production
-# Authorization URL 	https://welcome-dev.electrickiwi.co.nz/oauth/authorize
-# Token URL 	https://welcome-dev.electrickiwi.co.nz/oauth/token
-# API 	https://api-dev.electrickiwi.co.nz
-
 @endpoint(base_url=os.environ["ELECTRICKIWI_BASE_URL"])
 class ElectricKiwiEndpoint:
     # scope read_customer_detail
