@@ -1,7 +1,7 @@
 # __init__.py
 
 # version of ElectricKiwiApi for Python
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 # remove dev for production
 # Authorization URL 	https://welcome-dev.electrickiwi.co.nz/oauth/authorize
