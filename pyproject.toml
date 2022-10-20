@@ -29,6 +29,7 @@ push            = false
 
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['current_version = "{version}"', 'version     = "{version}"']
-"src/api/__init__.py" = ["{version}"]
+"src/electrickiwi_api/__init__.py" = ["{version}"]
+"setup.cfg" = ["version = {version}"]
 "README.md" = ['\[SemVer {version}\]', 'img.shields.io/static/v1.svg?label=SemVer&message={version}&color=blue']
 

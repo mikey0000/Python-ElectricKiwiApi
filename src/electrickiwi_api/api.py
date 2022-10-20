@@ -9,13 +9,13 @@ from apiclient import (
 @endpoint(base_url=os.environ["ELECTRICKIWI_BASE_URL"])
 class ElectricKiwiEndpoint:
     # scope read_customer_detail
-    customer = "customer/{customerNumber}"
+    customer = "customer/{customerNumber}/"
     # scope read_connection_detail
     customerConnectionDetails = "/connection/details/{customerNumber}/{connectionId}/"
     # scope read_billing_address
-    billingAddress = "/billing/address/{customerNumber}"
+    billingAddress = "/billing/address/{customerNumber}/"
     # scope read_billing_frequency
-    billingFrequency = "/billing/frequency/{customerNumber}"
+    billingFrequency = "/billing/frequency/{customerNumber}/"
     # scope read_billing_bills
     billingBills = "/billing/bills/{customerNumber}/?limit={limit}&offset={offset}/"
     # scope read_billing_bill
@@ -37,7 +37,7 @@ class ElectricKiwiEndpoint:
     # scope read_outage_contact
     outageContactInformationForConnection = "/service/outage/contact/{connectionId}/"
     # read_session
-    session = "/session"
+    session = "/session/"
 
 
 def get_next_page(response):
@@ -51,12 +51,16 @@ class ElectricKiwiApi(APIClient):
 
     def __init__(self):
         super().__init__()
-        # token etc
-        customer_session = self.get_session()
+        customer_session = self.get(ElectricKiwiEndpoint.session)
         self.customer_number = customer_session.data.customer.customer_number
         self.connection_id = customer_session.data.customer.connection.connection_id
 
-    def get_session(self):
+    def set_active_session(self):
+        customer_session = self.get(ElectricKiwiEndpoint.session)
+        self.customer_number = customer_session.data.customer.customer_number
+        self.connection_id = customer_session.data.customer.connection.connection_id
+
+    def get_active_session(self):
         return self.get(ElectricKiwiEndpoint.session)
 
     def get_customer(self):
