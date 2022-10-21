@@ -8,7 +8,7 @@
 [url_version]: https://pypi.org/project/electrickiwi-api/
 
 [img_pypi]: https://img.shields.io/badge/PyPI-wheels-green.svg
-[url_pypi]: https://pypi.org/project/bumpver/#files
+[url_pypi]: https://pypi.org/project/electrickiwi-api/#files
 
 [img_pyversions]: https://img.shields.io/pypi/pyversions/electrickiwi-api.svg
 [url_pyversions]: https://pypi.python.org/pypi/electrickiwi-api
