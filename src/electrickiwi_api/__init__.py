@@ -3,16 +3,13 @@
 # version of ElectricKiwiApi for Python
 __version__ = "0.5.4"
 
-from electrickiwi_api.api import (
+from api import (
     ElectricKiwiEndpoint,
     ElectricKiwiApi
 )
 
-from apiclient import (
-    BasicAuthentication,
-    HeaderAuthentication,
-    NoAuthentication,
-    QueryParameterAuthentication,
+from auth import (
+    AbstractAuth
 )
 
 # remove dev for production
