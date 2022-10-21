@@ -1,10 +1,17 @@
 import os
+from typing import Type, Optional
 
 from apiclient import (
     APIClient,
     endpoint,
     paginated
 )
+
+from apiclient.request_formatters import BaseRequestFormatter, NoOpRequestFormatter
+from apiclient.request_strategies import BaseRequestStrategy
+from apiclient.response_handlers import BaseResponseHandler, RequestsResponseHandler
+from apiclient.error_handlers import BaseErrorHandler, ErrorHandler
+
 
 @endpoint(base_url=os.environ["ELECTRICKIWI_BASE_URL"])
 class ElectricKiwiEndpoint:
@@ -47,10 +54,18 @@ def get_next_page(response):
     }
 
 
+class BaseAuthenticationMethod:
+    pass
+
+
 class ElectricKiwiApi(APIClient):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, authentication_method: Optional[BaseAuthenticationMethod] = None,
+                 response_handler: Type[BaseResponseHandler] = RequestsResponseHandler,
+                 request_formatter: Type[BaseRequestFormatter] = NoOpRequestFormatter,
+                 error_handler: Type[BaseErrorHandler] = ErrorHandler,
+                 request_strategy: Optional[BaseRequestStrategy] = None, ):
+        super().__init__(authentication_method, response_handler, request_formatter, error_handler, request_strategy)
         customer_session = self.get(ElectricKiwiEndpoint.session)
         self.customer_number = customer_session.data.customer.customer_number
         self.connection_id = customer_session.data.customer.connection.connection_id
@@ -110,7 +125,9 @@ class ElectricKiwiApi(APIClient):
     def post_hop(self, hop_interval):
         data = {"start": hop_interval}
         return self.post(ElectricKiwiEndpoint.hourOfPowerByConnection.format(customerNumber=self.customer_number,
-                                                                             connectionId=self.connection_id),data=data)
+                                                                             connectionId=self.connection_id),
+                         data=data)
 
     def get_outage_info(self):
-        return self.get(ElectricKiwiEndpoint.outageContactInformationForConnection.format(connectionId=self.connection_id))
+        return self.get(
+            ElectricKiwiEndpoint.outageContactInformationForConnection.format(connectionId=self.connection_id))
