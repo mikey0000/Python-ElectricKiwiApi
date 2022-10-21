@@ -1,4 +1,5 @@
 import os
+
 from typing import Type, Optional
 
 from apiclient import (
@@ -9,7 +10,7 @@ from apiclient import (
 
 from apiclient.request_formatters import BaseRequestFormatter, NoOpRequestFormatter
 from apiclient.request_strategies import BaseRequestStrategy
-from apiclient.response_handlers import BaseResponseHandler, RequestsResponseHandler
+from apiclient.response_handlers import BaseResponseHandler, JsonResponseHandler
 from apiclient.error_handlers import BaseErrorHandler, ErrorHandler
 
 
@@ -61,19 +62,19 @@ class BaseAuthenticationMethod:
 class ElectricKiwiApi(APIClient):
 
     def __init__(self, authentication_method: Optional[BaseAuthenticationMethod] = None,
-                 response_handler: Type[BaseResponseHandler] = RequestsResponseHandler,
+                 response_handler: Type[BaseResponseHandler] = JsonResponseHandler,
                  request_formatter: Type[BaseRequestFormatter] = NoOpRequestFormatter,
                  error_handler: Type[BaseErrorHandler] = ErrorHandler,
                  request_strategy: Optional[BaseRequestStrategy] = None, ):
         super().__init__(authentication_method, response_handler, request_formatter, error_handler, request_strategy)
         customer_session = self.get(ElectricKiwiEndpoint.session)
-        self.customer_number = customer_session.data.customer.customer_number
-        self.connection_id = customer_session.data.customer.connection.connection_id
+        self.customer_number = customer_session["data"]["customer"][0]["customer_number"]
+        self.connection_id = customer_session["data"]["customer"][0]["connection"]["connection_id"]
 
     def set_active_session(self):
         customer_session = self.get(ElectricKiwiEndpoint.session)
-        self.customer_number = customer_session.data.customer.customer_number
-        self.connection_id = customer_session.data.customer.connection.connection_id
+        self.customer_number = customer_session["data"]["customer"][0]["customer_number"]
+        self.connection_id = customer_session["data"]["customer"][0]["connection"]["connection_id"]
 
     def get_active_session(self):
         return self.get(ElectricKiwiEndpoint.session)

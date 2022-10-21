@@ -29,9 +29,17 @@ Authentication has been left to you.
 # set env for url
 os.environ["ELECTRICKIWI_BASE_URL"] = "https://api-dev.electrickiwi.co.nz"
 # your session with a authentication token
-client = new ElectricKiwiApi(authentication_method=HeaderAuthentication(token="<secret_value>")) 
+from electrickiwi_api import ElectricKiwiApi
+from electrickiwi_api import HeaderAuthentication
 
+api = ElectricKiwiApi(authentication_method=HeaderAuthentication(token="<secret_value>"))
 # call it
+```
+
+renew the token with 
+```python
+api._authentication_method=HeaderAuthentication(token="<secret_value>")
+
 ```
 
 ### TODO
