@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name        = "electrickiwi-api"
-version     = "0.5.3"
+version     = "0.5.4"
 license     = {text = "GNU-3.0"}
 description = ""
 readme      = "README.md"
@@ -19,7 +19,7 @@ dependencies    = [
     ]
 
 [tool.bumpver]
-current_version = "0.5.3"
+current_version = "0.5.4"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "Bump version {old_version} -> {new_version}"
 commit          = true
