@@ -1,8 +1,5 @@
-import os
-
-from typing import Type, Optional
-
 from electrickiwi_api.auth import AbstractAuth
+from electrickiwi_api.exceptions import AuthException
 
 
 class ElectricKiwiEndpoint:
@@ -51,12 +48,15 @@ class ElectricKiwiApi:
         self.connection_id = None
         self.customer_number = None
         self.auth = auth
-        self.set_active_session()
 
     async def set_active_session(self):
-        customer_session = await self.auth.request("get", ElectricKiwiEndpoint.session)
-        self.customer_number = customer_session["data"]["customer"][0]["customer_number"]
-        self.connection_id = customer_session["data"]["customer"][0]["connection"]["connection_id"]
+        resp = await self.auth.request("get", ElectricKiwiEndpoint.session)
+        if resp.status == 200:
+            customer_session = await resp.json()
+            self.customer_number = customer_session["data"]["customer"][0]["customer_number"]
+            self.connection_id = customer_session["data"]["customer"][0]["connection"]["connection_id"]
+        if resp.status == 401:
+            raise AuthException(f"Authorization failed: {res.status}")
 
     async def get_active_session(self):
         await self.auth.request("get", ElectricKiwiEndpoint.session)
