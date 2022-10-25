@@ -1,7 +1,10 @@
 import aiohttp
 from typing import Any, cast
 
-from src.electrickiwi_api import AbstractAuth, ElectricKiwiApi
+from aiohttp import ClientSession
+
+from electrickiwi_api.auth import AbstractAuth
+from electrickiwi_api.api import ElectricKiwiApi
 
 
 class ApiAuthImpl(AbstractAuth):
@@ -22,6 +25,13 @@ class ApiAuthImpl(AbstractAuth):
         return cast(str, self._token)
 
 
-# headers = {"Authorization": "Bearer eyJh...0M30"}
-# async with ClientSession(headers=headers) as session:
-# ElectricKiwiApi(ApiAuthImpl(session, token))
+async def test():
+    async with ClientSession() as session:
+        api = ElectricKiwiApi(ApiAuthImpl(session, ""))
+        await api.get_active_session()
+        print("Success")
+
+
+async def main():
+    print("start\n")
+    await test()

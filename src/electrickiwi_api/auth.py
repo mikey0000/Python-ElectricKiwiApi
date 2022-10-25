@@ -4,13 +4,13 @@ from typing import Optional, Mapping, Any
 
 from aiohttp import ClientSession, ClientResponse, ClientError
 
-from exceptions import AuthException
+from electrickiwi_api.exceptions import AuthException
 
 AUTHORIZATION_HEADER = "Authorization"
 
 _LOGGER = logging.getLogger(__name__)
 
-API_BASE_URL = "https://api.electrickiwi.co.nz"
+API_BASE_URL = "https://api-dev.electrickiwi.co.nz"
 
 class AbstractAuth(ABC):
     """Abstract class to make authenticated requests."""

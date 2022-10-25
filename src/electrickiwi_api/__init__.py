@@ -3,12 +3,12 @@
 # version of ElectricKiwiApi for Python
 __version__ = "0.5.4"
 
-from api import (
+from electrickiwi_api.api import (
     ElectricKiwiEndpoint,
     ElectricKiwiApi
 )
 
-from auth import (
+from electrickiwi_api.auth import (
     AbstractAuth
 )
 
