@@ -8,11 +8,8 @@ from electrickiwi_api.api import (
     ElectricKiwiApi
 )
 
-from apiclient import (
-    BasicAuthentication,
-    HeaderAuthentication,
-    NoAuthentication,
-    QueryParameterAuthentication,
+from electrickiwi_api.auth import (
+    AbstractAuth
 )
 
 # remove dev for production

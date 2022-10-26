@@ -25,22 +25,17 @@ Authentication has been left to you.
 
 ## How to use it
 
-```python
-# set env for url
-os.environ["ELECTRICKIWI_BASE_URL"] = "https://api-dev.electrickiwi.co.nz"
-# your session with a authentication token
-from electrickiwi_api import ElectricKiwiApi
-from electrickiwi_api import HeaderAuthentication
+implement AbstractAuth (see test_instance.py in tests)
 
-api = ElectricKiwiApi(authentication_method=HeaderAuthentication(token="<secret_value>"))
-# call it
+once implemented you can pass it to `ElectricKiwiApi`
+e.g
+
+```python
+api = ElectricKiwiApi(ApiAuthImpl(session))
+await api.get_active_session()
+await api.set_active_session()
 ```
 
-renew the token with 
-```python
-api._authentication_method=HeaderAuthentication(token="<secret_value>")
-
-```
-
-### TODO
-renew session token by calling the token endpoint
+You will need to call api.set_active_session() 
+to set the customer number and connection id for you to run additional API calls
+as it sets them on the class so your not passing them continuously.
