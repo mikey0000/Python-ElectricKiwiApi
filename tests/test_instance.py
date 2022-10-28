@@ -1,13 +1,11 @@
 import asyncio
 import sys
+from typing import cast
 
 import aiohttp
-from typing import Any, cast
-
 from aiohttp import ClientSession
-
-from electrickiwi_api.auth import AbstractAuth
 from electrickiwi_api.api import ElectricKiwiApi
+from electrickiwi_api.auth import AbstractAuth
 
 
 class ApiAuthImpl(AbstractAuth):
@@ -30,9 +28,14 @@ class ApiAuthImpl(AbstractAuth):
 
 async def test():
     async with ClientSession() as session:
-        api = ElectricKiwiApi(ApiAuthImpl(session, ""))
+        api = ElectricKiwiApi(ApiAuthImpl(session, "eg9F9lXkDM5GyxRWVpT4KTztx94JDGibbSZluAQwfB"))
         await api.get_active_session()
         await api.set_active_session()
+        # we don't have scope permissions on this one
+        # await api.get_billing_address()
+        await api.get_hop()
+        await api.get_billing_bills()
+        await api.get_billing_frequency()
         print("Success", file=sys.stdout)
 
 

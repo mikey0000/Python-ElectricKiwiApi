@@ -12,6 +12,7 @@ _LOGGER = logging.getLogger(__name__)
 
 API_BASE_URL = "https://api-dev.electrickiwi.co.nz"
 
+
 class AbstractAuth(ABC):
     """Abstract class to make authenticated requests."""
 
@@ -31,8 +32,8 @@ class AbstractAuth(ABC):
         except ClientError as err:
             raise AuthException(f"Access token failure: {err}") from err
         headers = {AUTHORIZATION_HEADER: f"Bearer {access_token}"}
-        if not (url.startswith("http://") or url.startswith("https://")):
-            url = f"{self._host}/{url}"
+        if not (url.startswith("https://")):
+            url = f"{self._host}{url}"
         _LOGGER.debug("request[%s]=%s %s", method, url, kwargs.get("params"))
         if method == "post" and "json" in kwargs:
             _LOGGER.debug("request[post json]=%s", kwargs["json"])

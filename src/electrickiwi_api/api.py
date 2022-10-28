@@ -1,10 +1,16 @@
+import sys
+
 from electrickiwi_api.auth import AbstractAuth
-from electrickiwi_api.exceptions import AuthException
+from electrickiwi_api.exceptions import AuthException, ApiException
+from electrickiwi_api.model import OutageContact, Hop, HopIntervals, ConsumptionSummary, AccountBalance, BillFile, \
+    Bills, Bill, BillingFrequency, BillingAddress, CustomerConnection, Customer, Session
+
+from electrickiwi_api.model import ConsumptionAverage
 
 
 class ElectricKiwiEndpoint:
     # scope read_customer_detail
-    customer = "customer/{customerNumber}/"
+    customer = "/customer/{customerNumber}/"
     # scope read_connection_detail
     customerConnectionDetails = "/connection/details/{customerNumber}/{connectionId}/"
     # scope read_billing_address
@@ -42,6 +48,13 @@ def get_next_page(response):
     }
 
 
+def check_status(status):
+    if status == 401:
+        raise AuthException(f"Authorization failed: {status}")
+    if status != 200:
+        raise ApiException(f"Error request failed: {status}")
+
+
 class ElectricKiwiApi:
 
     def __init__(self, auth: AbstractAuth):
@@ -51,78 +64,113 @@ class ElectricKiwiApi:
 
     async def set_active_session(self):
         resp = await self.auth.request("get", ElectricKiwiEndpoint.session)
-        if resp.status == 200:
-            customer_session = await resp.json()
-            self.customer_number = customer_session["data"]["customer"][0]["customer_number"]
-            self.connection_id = customer_session["data"]["customer"][0]["connection"]["connection_id"]
-        if resp.status == 401:
-            raise AuthException(f"Authorization failed: {res.status}")
+        check_status(resp.status)
+
+        customer_session = Session.from_dict(await resp.json())
+        self.customer_number = customer_session.customer[0].customer_number
+        self.connection_id = customer_session.customer[0].connection.connection_id
 
     async def get_active_session(self):
-        await self.auth.request("get", ElectricKiwiEndpoint.session)
+        session = await self.auth.request("get", ElectricKiwiEndpoint.session)
+        check_status(session.status)
+        Session.from_dict(await session.json())
 
     async def get_customer(self):
-        await self.auth.request("get", ElectricKiwiEndpoint.customer.format(customerNumber=self.customer_number))
+        customer = await self.auth.request("get",
+                                           ElectricKiwiEndpoint.customer.format(customerNumber=self.customer_number))
+        check_status(customer.status)
+        Customer.from_dict(await customer.json())
 
     async def get_connection_details(self):
-        await self.auth.request("get", ElectricKiwiEndpoint.customerConnectionDetails.format(
+        connection_details = await self.auth.request("get", ElectricKiwiEndpoint.customerConnectionDetails.format(
             customerNumber=self.customer_number,
             connectionId=self.connection_id))
+        check_status(connection_details.status)
+        CustomerConnection.from_dict(await connection_details.json())
 
     async def get_billing_address(self):
-        await self.auth.request("get",
-                                ElectricKiwiEndpoint.billingAddress.format(customerNumber=self.customer_number))
+        billing_address = await self.auth.request("get",
+                                                  ElectricKiwiEndpoint.billingAddress.format(
+                                                      customerNumber=self.customer_number))
+        check_status(billing_address.status)
+        BillingAddress.from_dict(await billing_address.json())
 
     async def get_billing_frequency(self):
-        await self.auth.request("get", ElectricKiwiEndpoint.billingFrequency.format(
+        billing_frequency = await self.auth.request("get", ElectricKiwiEndpoint.billingFrequency.format(
             customerNumber=self.customer_number))
+        check_status(billing_frequency.status)
+        BillingFrequency.from_dict(await billing_frequency.json())
 
     # @paginated(by_query_params=get_next_page)
-    async def get_billing_bills(self):
-        await self.auth.request("get", ElectricKiwiEndpoint.billingBills)
+    async def get_billing_bills(self, limit = 5, offset = 0):
+        billing_bills = await self.auth.request("get", ElectricKiwiEndpoint.billingBills.format(customerNumber=self.customer_number, limit=limit, offset=offset))
+        check_status(billing_bills.status)
+        Bills.from_dict(await billing_bills.json())
 
     async def get_billing_bill(self, bill_id):
-        await self.auth.request("get",
-                                ElectricKiwiEndpoint.billingBill.format(customerNumber=self.customer_number,
-                                                                        billId=bill_id))
+        billing_bill = await self.auth.request("get",
+                                               ElectricKiwiEndpoint.billingBill.format(
+                                                   customerNumber=self.customer_number,
+                                                   billId=bill_id))
+        check_status(billing_bill.status)
+        Bill.from_dict(await billing_bill.json())
 
     async def get_bill_file(self, bill_id):
-        await self.auth.request("get",
-                                ElectricKiwiEndpoint.billingBillFile.format(customerNumber=self.customer_number,
-                                                                            billId=bill_id))
+        bill_file = await self.auth.request("get",
+                                            ElectricKiwiEndpoint.billingBillFile.format(
+                                                customerNumber=self.customer_number,
+                                                billId=bill_id))
+        check_status(bill_file.status)
+        BillFile.from_dict(await bill_file.json())
 
     async def get_account_balance(self):
-        await self.auth.request("get",
-                                ElectricKiwiEndpoint.accountBalance.format(customerNumber=self.customer_number))
+        account_balance = await self.auth.request("get",
+                                                  ElectricKiwiEndpoint.accountBalance.format(
+                                                      customerNumber=self.customer_number))
+        check_status(account_balance.status)
+        AccountBalance.from_dict(await account_balance.json())
 
     async def get_consumption_summary(self, start_date, end_date):
-        await self.auth.request("get", ElectricKiwiEndpoint.consumptionSummary.format(
+        consumption_summary = await self.auth.request("get", ElectricKiwiEndpoint.consumptionSummary.format(
             customerNumber=self.customer_number,
             connectionId=self.connection_id),
-                                json={start_date: start_date, end_date: end_date})
+                                                      json={start_date: start_date, end_date: end_date})
+        check_status(consumption_summary.status)
+        ConsumptionSummary.from_dict(await consumption_summary.json())
 
     async def get_consumption_averages(self, start_date, end_date, group_by="week"):
-        await self.auth.request("get", ElectricKiwiEndpoint.consumptionAverages.format(
+        consumption_average = await self.auth.request("get", ElectricKiwiEndpoint.consumptionAverages.format(
             customerNumber=self.customer_number,
             connectionId=self.connection_id),
-                                json={start_date: start_date, end_date: end_date, group_by: group_by})
+                                                      json={start_date: start_date, end_date: end_date,
+                                                            group_by: group_by})
+        check_status(consumption_average.status)
+        ConsumptionAverage.from_dict(await consumption_average.json())
 
     async def get_hop_intervals(self):
-        await self.auth.request("get", ElectricKiwiEndpoint.hourOfPowerIntervals)
+        hop_intervals = await self.auth.request("get", ElectricKiwiEndpoint.hourOfPowerIntervals)
+        check_status(hop_intervals.status)
+        HopIntervals.from_dict(await hop_intervals.json())
 
     async def get_hop(self):
-        await self.auth.request("get", ElectricKiwiEndpoint.hourOfPowerByConnection.format(
+        get_hop = await self.auth.request("get", ElectricKiwiEndpoint.hourOfPowerByConnection.format(
             customerNumber=self.customer_number,
             connectionId=self.connection_id))
+        check_status(get_hop.status)
+        Hop.from_dict(await get_hop.json())
 
     async def post_hop(self, hop_interval):
         data = {"start": hop_interval}
-        await self.auth.request("post", ElectricKiwiEndpoint.hourOfPowerByConnection.format(
+        post_hop = await self.auth.request("post", ElectricKiwiEndpoint.hourOfPowerByConnection.format(
             customerNumber=self.customer_number,
             connectionId=self.connection_id),
-                                json=data)
+                                           json=data)
+        check_status(post_hop.status)
+        Hop.from_dict(await post_hop.json())
 
     async def get_outage_info(self):
-        await self.auth.request("get",
-                                ElectricKiwiEndpoint.outageContactInformationForConnection.format(
-                                    connectionId=self.connection_id))
+        outage_info = await self.auth.request("get",
+                                              ElectricKiwiEndpoint.outageContactInformationForConnection.format(
+                                                  connectionId=self.connection_id))
+        check_status(outage_info.status)
+        OutageContact.from_dict(await outage_info.json())
