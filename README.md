@@ -20,7 +20,10 @@ Provide a simple API interface to the Electric Kiwi API and includes all endpoin
 session management / token management, there are enough libraries and frameworks that
 already do this very well, no point reinventing the wheel
 
-Authentication has been left to you.
+Authentication has been left to you. 
+
+If you are planning on joining Electric Kiwi use my link to score a $50 credit
+[sign up link](https://www.electrickiwi.co.nz/RAFaMwYjGd)
 
 
 ## How to use it
