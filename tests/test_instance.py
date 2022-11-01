@@ -28,7 +28,7 @@ class ApiAuthImpl(AbstractAuth):
 
 async def test():
     async with ClientSession() as session:
-        api = ElectricKiwiApi(ApiAuthImpl(session, "eg9F9lXkDM5GyxRWVpT4KTztx94JDGibbSZluAQwfB"))
+        api = ElectricKiwiApi(ApiAuthImpl(session, ""))
         await api.get_active_session()
         await api.set_active_session()
         # we don't have scope permissions on this one

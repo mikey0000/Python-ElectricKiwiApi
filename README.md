@@ -25,6 +25,11 @@ Authentication has been left to you.
 If you are planning on joining Electric Kiwi use my link to score a $50 credit
 [sign up link](https://www.electrickiwi.co.nz/RAFaMwYjGd)
 
+#Authentication
+
+To make any requests to the token url you are required to have basic auth using the client id and secret
+same as the python api example.
+
 
 ## How to use it
 
