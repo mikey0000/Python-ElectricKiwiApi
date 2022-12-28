@@ -22,7 +22,7 @@ class ApiAuthImpl(AbstractAuth):
 
     async def async_get_access_token(self) -> str:
         """Return a valid access token."""
-
+        """Authorization: Basic [client_id:client_secret]"""
         return cast(str, self._token)
 
 
