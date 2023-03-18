@@ -1,7 +1,7 @@
 # __init__.py
 
 # version of ElectricKiwiApi for Python
-__version__ = "0.7.1"
+__version__ = "0.8.0"
 
 from electrickiwi_api.api import (
     ElectricKiwiEndpoint,
