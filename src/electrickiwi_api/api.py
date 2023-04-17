@@ -60,8 +60,8 @@ class ElectricKiwiApi:
     """Electric Kiwi API"""
 
     def __init__(self, auth: AbstractAuth) -> None:
-        self.connection_id = None
-        self.customer_number = None
+        self.connection_id: int = None
+        self.customer_number: int = None
         self.auth = auth
 
     async def set_active_session(self) -> None:
@@ -103,7 +103,7 @@ class ElectricKiwiApi:
         check_status(billing_frequency.status)
         return BillingFrequency.from_dict(await billing_frequency.json())
 
-    # @paginated(by_query_params=get_next_page)
+    #@paginated(by_query_params=get_next_page)
     async def get_billing_bills(self, limit = 5, offset = 0) -> Bills:
         billing_bills = await self.auth.request("get", ElectricKiwiEndpoint.billingBills.format(customerNumber=self.customer_number, limit=limit, offset=offset))
         check_status(billing_bills.status)

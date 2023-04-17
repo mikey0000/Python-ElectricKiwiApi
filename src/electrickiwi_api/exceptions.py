@@ -12,3 +12,7 @@ class AuthException(ApiException):
 
 class InvalidSyncTokenException(ApiException):
     """Raised when the sync token is invalid."""
+
+
+class RequestsExceededException(ApiException):
+    """Raised when requests exceed 20 requests a second"""

@@ -684,7 +684,7 @@ class SessionCustomer:
 
 @dataclass
 class Session:
-    customer: List[Customer]
+    customer: List[SessionCustomer]
     customer_numbers: List[int]
     type: str
 
