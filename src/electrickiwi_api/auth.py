@@ -1,5 +1,9 @@
+"""abstract auth implementation for electric kiwi"""
+from __future__ import annotations
+
 import logging
 from abc import abstractmethod, ABC
+from typing import Any, Mapping, Optional
 
 from aiohttp import ClientSession, ClientResponse, ClientError
 
@@ -24,7 +28,7 @@ class AbstractAuth(ABC):
     async def async_get_access_token(self) -> str:
         """Return a valid access token."""
 
-    async def request(self, method: str, url: str, **kwargs) -> ClientResponse:
+    async def request(self, method: str, url: str, **kwargs: Optional[Mapping[str, Any]]) -> ClientResponse:
         """Make a request."""
         try:
             access_token = await self.async_get_access_token()
