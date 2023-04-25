@@ -33,3 +33,5 @@ push            = false
 "setup.cfg" = ["version = {version}"]
 "README.md" = ['\[SemVer {version}\]', 'img.shields.io/static/v1.svg?label=SemVer&message={version}&color=blue']
 
+[tool.setuptools.package-data]
+electrickiwi_api = ["py.typed"]
