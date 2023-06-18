@@ -147,7 +147,8 @@ class Customer:
 
 
 @dataclass
-class Hop:
+class ConnectionHop:
+    """Individual Hop start or end on customer connection"""
     start_time: str
     end_time: str
     interval_start: str
@@ -159,7 +160,7 @@ class Hop:
         _end_time = str(obj.get("end_time"))
         _interval_start = str(obj.get("interval_start"))
         _interval_end = str(obj.get("interval_end"))
-        return Hop(_start_time, _end_time, _interval_start, _interval_end)
+        return ConnectionHop(_start_time, _end_time, _interval_start, _interval_end)
 
 
 @dataclass
@@ -170,7 +171,7 @@ class CustomerConnection:
     identifier: str
     address: str
     is_active: str
-    hop: Hop
+    hop: ConnectionHop
     start_date: str
     end_date: str
 
@@ -184,7 +185,7 @@ class CustomerConnection:
         _identifier = str(customer_connection.get("identifier"))
         _address = str(customer_connection.get("address"))
         _is_active = str(customer_connection.get("is_active"))
-        _hop = Hop.from_dict(customer_connection.get("hop"))
+        _hop = ConnectionHop.from_dict(customer_connection.get("hop"))
         _start_date = str(customer_connection.get("start_date"))
         _end_date = str(customer_connection.get("end_date"))
         return CustomerConnection(
@@ -376,15 +377,15 @@ class BillFile:
 
 
 @dataclass
-class Range:
+class ConsumptionRange:
     end_date: str
     start_date: str
 
     @staticmethod
-    def from_dict(obj: Any) -> "Range":
+    def from_dict(obj: Any) -> "ConsumptionRange":
         _end_date = str(obj.get("end_date"))
         _start_date = str(obj.get("start_date"))
-        return Range(_end_date, _start_date)
+        return ConsumptionRange(_end_date, _start_date)
 
 
 @dataclass
@@ -427,14 +428,14 @@ class UsageCharge:
 
 @dataclass
 class ConsumptionSummary:
-    range: Range
+    range: ConsumptionRange
     usage_charges: List[UsageCharge]
     type: str
 
     @staticmethod
     def from_dict(consumption_summary_data: Any) -> "ConsumptionSummary":
         consumption_summary = consumption_summary_data.get("data")
-        _range = Range.from_dict(consumption_summary.get("range"))
+        _range = ConsumptionRange.from_dict(consumption_summary.get("range"))
         _usage_charges = [
             UsageCharge.from_dict(y) for y in consumption_summary.get("usage_charges")
         ]
@@ -460,6 +461,20 @@ class Interval:
 
 
 @dataclass
+class UsageRange:
+    end_date: str
+    start_date: str
+    group_by: str
+
+    @staticmethod
+    def from_dict(obj: Any) -> "UsageRange":
+        _end_date = str(obj.get("end_date"))
+        _start_date = str(obj.get("start_date"))
+        _group_by = str(obj.get("group_by"))
+        return UsageRange(_end_date, _start_date, _group_by)
+
+
+@dataclass
 class Usage:
     adjustment_charges_incl_gst: str
     bill_consumption: str
@@ -469,7 +484,7 @@ class Usage:
     fixed_charges_incl_gst: str
     intervals: List[dict]
     percent_consumption_adjustment: str
-    range: Range
+    range: UsageRange
     status: str
     total_charges_incl_gst: str
     type: str
@@ -491,7 +506,7 @@ class Usage:
         _percent_consumption_adjustment = str(
             usage.get("percent_consumption_adjustment")
         )
-        _range = Range.from_dict(usage.get("range"))
+        _range = UsageRange.from_dict(usage.get("range"))
         _status = str(usage.get("status"))
         _total_charges_incl_gst = str(usage.get("total_charges_incl_gst"))
         _type = str(usage.get("type"))
@@ -516,23 +531,9 @@ class Usage:
 
 
 @dataclass
-class Range:
-    end_date: str
-    start_date: str
-    group_by: str
-
-    @staticmethod
-    def from_dict(obj: Any) -> "Range":
-        _end_date = str(obj.get("end_date"))
-        _start_date = str(obj.get("start_date"))
-        _group_by = str(obj.get("group_by"))
-        return Range(_end_date, _start_date, _group_by)
-
-
-@dataclass
 class ConsumptionAverage:
     group_breakdown: List[str]
-    range: Range
+    range: ConsumptionRange
     type: str
     usage: List[dict]
 
@@ -540,7 +541,7 @@ class ConsumptionAverage:
     def from_dict(consumption_average_data: dict) -> "ConsumptionAverage":
         consumption_average = consumption_average_data.get("data")
         _group_breakdown = consumption_average.get("group_breakdown")
-        _range = Range.from_dict(consumption_average.get("range"))
+        _range = ConsumptionRange.from_dict(consumption_average.get("range"))
         _type = str(consumption_average.get("type"))
         _usage = [
             {y: [Usage.from_dict(consumption_average.get("usage").get(y))]}
