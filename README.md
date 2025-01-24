@@ -1,4 +1,4 @@
-# Electric Kiwi Python API
+# Electric Kiwi Python API (Depreciated)
 
 [![SemVer 0.8.5][img_version]][url_version]
 [![PyPI Releases][img_pypi]][url_pypi]
